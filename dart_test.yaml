@@ -1,0 +1,4 @@
+tags:
+  # Needs a running local Supabase; skipped unless SUPABASE_URL and
+  # SUPABASE_ANON_KEY are passed with --dart-define (see agents.md).
+  integration:

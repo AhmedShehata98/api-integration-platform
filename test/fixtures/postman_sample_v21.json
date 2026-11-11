@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Petstore",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "List pets",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "X-Debug", "value": "1", "disabled": true }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/pets?limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["pets"],
+          "query": [
+            { "key": "limit", "value": "10" },
+            { "key": "offset", "value": "5", "disabled": true }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Admin",
+      "auth": {
+        "type": "basic",
+        "basic": [
+          { "key": "username", "value": "admin" },
+          { "key": "password", "value": "secret" }
+        ]
+      },
+      "item": [
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "Create user",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"name\": \"Rex\"}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": "{{baseUrl}}/users"
+              }
+            },
+            {
+              "name": "Login form",
+              "request": {
+                "method": "POST",
+                "auth": { "type": "noauth" },
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "user", "value": "rex" },
+                    { "key": "remember", "value": "1", "disabled": true }
+                  ]
+                },
+                "url": "{{baseUrl}}/login"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Upload",
+          "event": [
+            { "listen": "test", "script": { "exec": ["pm.test('ok')"] } }
+          ],
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "cat", "type": "text" },
+                { "key": "photo", "type": "file", "src": "cat.png" }
+              ]
+            },
+            "url": { "protocol": "https", "host": ["api", "test"], "path": ["upload"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            { "key": "key", "value": "api_key" },
+            { "key": "value", "value": "k-123" },
+            { "key": "in", "value": "query" }
+          ]
+        },
+        "url": "{{baseUrl}}/search"
+      }
+    },
+    {
+      "name": "Graph",
+      "request": {
+        "method": "POST",
+        "auth": { "type": "oauth2" },
+        "body": { "mode": "graphql", "graphql": { "query": "{ pets }" } },
+        "url": "{{baseUrl}}/graphql"
+      }
+    },
+    {
+      "name": "Trace",
+      "request": { "method": "TRACE", "url": "{{baseUrl}}/trace" }
+    }
+  ]
+}
