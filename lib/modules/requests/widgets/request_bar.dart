@@ -71,11 +71,25 @@ class _RequestBarState extends ConsumerState<RequestBar> {
                   child: const Text('Cancel'),
                 )
               else
-                Tooltip(
-                  message: 'Ctrl+Enter',
-                  child: FilledButton(
-                    onPressed: sender.send,
-                    child: const Text('Send'),
+                FilledButton(
+                  onPressed: sender.send,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Send', maxLines: 1),
+                      const SizedBox(width: AppSpacing.sm),
+                      // Keyboard hint, always `Ctrl` (shell standard).
+                      Text(
+                        'Ctrl+Enter',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontFamily: 'JetBrainsMono',
+                          color: Theme.of(context).colorScheme.onPrimary
+                              .withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               IconButton(

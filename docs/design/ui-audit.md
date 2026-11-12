@@ -31,8 +31,8 @@ Status values: **Fixed** · **Open** · **Decision needed** (conflicting or need
 
 | Type | Finding | File | Status |
 | --- | --- | --- | --- |
-| Missing | Send button has no `Ctrl+Enter` hint chip | `modules/requests/widgets/request_bar.dart` | Open |
-| Missing | Tabs have no count badges (Params 2, Headers 3) | `modules/requests/widgets/request_editor.dart` | Open |
+| Missing | Send button has no `Ctrl+Enter` hint | `modules/requests/widgets/request_bar.dart` | Fixed (hint inside the button; tested) |
+| Missing | Tabs have no count badges (Params 2, Headers 3) | `modules/requests/widgets/request_editor.dart` | Fixed (enabled, non-empty rows; hidden at 0; tested) |
 | Wrong | `{{baseUrl}}` chip is shown under the URL field; Stitch shows it inline in the URL | `modules/requests/widgets/url_field.dart` | Open |
 | Missing | Request header row (collection / name, Save + `Ctrl+S` hint) | `request_screen.dart` | Open |
 | Missing | Table header ("Query Parameters", Key / Value) and "Bulk Edit" | `key_value_table.dart` | Decision needed (Bulk Edit is new behavior) |
@@ -66,5 +66,5 @@ Not reviewed in detail yet: Body and Auth tab captures (`02_*`, `03_*`).
 | 10 | Import dialog | Captured; tabs and actions present; not compared in detail |
 | 11 | Settings | Captured; has Theme, timeout, redirects, proxy toggle; Stitch layout not compared |
 | 12 | Dialogs & feedback | Only the New menu is captured; save and delete dialogs and the snackbar still to add |
-| 13 | Account dialogs | Guest dialog captured; Waiting, signed-in and warning dialogs still to add |
+| 13 | Account dialogs | Guest, Waiting, signed-in and guest-data warning captured in both themes. Layout, 28px shape, copy and actions match the spec; no findings (warning confirm uses the error-tinted button on purpose) |
 | L1 | Light theme | All 14 captures exist in light; Response Success (light) reviewed and consistent with dark |

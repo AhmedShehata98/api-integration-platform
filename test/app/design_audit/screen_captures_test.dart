@@ -151,8 +151,7 @@ class _FakeHttp implements HttpRequestRepository {
             'content-type': ['application/json'],
             'content-length': ['66'],
           },
-          body:
-              '{"id":42,"name":"Rex","status":"available","tags":["dog","good"]}',
+          body: '{"id":42,"name":"Rex","status":"available","tags":["dog","good"]}',
           prettyBody:
               '{\n  "id": 42,\n  "name": "Rex",\n  "status": "available",\n'
               '  "tags": [\n    "dog",\n    "good"\n  ]\n}',
@@ -368,6 +367,41 @@ void main() {
         await tester.tap(find.byType(UserAvatar));
         await tester.pumpAndSettle();
         await _capture(tester, '13_account_guest', name);
+      });
+
+      testWidgets('13 account waiting', (tester) async {
+        final auth = FakeAuthRepository()..holdBrowser = true;
+        await _open(tester, theme, auth: auth);
+        await tester.tap(find.byType(UserAvatar));
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.widgetWithText(OutlinedButton, 'Continue with GitHub'),
+        );
+        await tester.pump();
+        await _capture(tester, '13_account_waiting', name);
+      });
+
+      testWidgets('13 account guest data warning', (tester) async {
+        final auth = FakeAuthRepository()..githubAccountExists = true;
+        await _open(tester, theme, auth: auth);
+        await tester.tap(find.byType(UserAvatar));
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.widgetWithText(OutlinedButton, 'Continue with GitHub'),
+        );
+        await tester.pumpAndSettle();
+        await _capture(tester, '13_account_warning', name);
+      });
+
+      testWidgets('13 account signed in', (tester) async {
+        await _open(
+          tester,
+          theme,
+          auth: FakeAuthRepository(user: FakeAuthRepository.githubUser),
+        );
+        await tester.tap(find.byType(UserAvatar));
+        await tester.pumpAndSettle();
+        await _capture(tester, '13_account_signed_in', name);
       });
     });
   }
