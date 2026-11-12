@@ -22,9 +22,9 @@ Status values: **Fixed** · **Open** · **Decision needed** (conflicting or need
 | Wrong | Sidebar header: "Collections" truncated; Import was an icon only; New was a small tonal button next to it | `app/shell/sidebar/sidebar.dart` | Fixed: title + count + "Import" text button, full-width teal New |
 | Wrong | Filter field showed `Ctrl+K` only while focused | `app/shell/sidebar/sidebar.dart` | Fixed (always visible) |
 | Wrong | Environment dropdown was a plain text button with a layers icon; standard is a pill with a dot | `modules/environments/widgets/environment_dropdown.dart` | Fixed |
-| Missing | Top bar: layout toggle and overflow ⋮ menu | `app/shell/top_bar.dart` | Decision needed (no layout setting exists; needs provider + test) |
-| Missing | Status bar: layout icon on the right | `app/shell/status_bar.dart` | Decision needed (same as above) |
-| Nit | Sidebar title is "Collections", not uppercase "COLLECTIONS"; count is collections (2), Stitch shows 8 | `sidebar.dart` | Decision needed |
+| Missing | Top bar: layout toggle and overflow ⋮ menu | `app/shell/top_bar.dart`, `layout_toggle_button.dart` | Fixed: toggle stores `stackedLayout` in settings and switches the panes; menu has Import…, Close all tabs, Settings (tested) |
+| Missing | Status bar: layout icon on the right | `app/shell/status_bar.dart` | Fixed (same toggle) |
+| Nit | Sidebar title is "Collections", not uppercase "COLLECTIONS"; count is collections (2), Stitch shows 8 | `sidebar.dart` | Fixed: uppercase title. Count stays the number of collections (the footer already shows the request count) |
 | Nit | Active request tab used a bottom underline; Stitch uses a top teal border | `modules/requests/widgets/request_tab_bar.dart` | Fixed |
 
 ## 1–3 — Request builder (Params, Body, Headers & Auth)
@@ -33,9 +33,9 @@ Status values: **Fixed** · **Open** · **Decision needed** (conflicting or need
 | --- | --- | --- | --- |
 | Missing | Send button has no `Ctrl+Enter` hint | `modules/requests/widgets/request_bar.dart` | Fixed (hint inside the button; tested) |
 | Missing | Tabs have no count badges (Params 2, Headers 3) | `modules/requests/widgets/request_editor.dart` | Fixed (enabled, non-empty rows; hidden at 0; tested) |
-| Nit | `{{baseUrl}}` chips are listed under the URL field; Stitch shows them inline in the URL | `modules/requests/widgets/url_field.dart` | Decision needed (PRD only asks for amber chips for unresolved variables; inline chips need a custom text field) |
-| Nit | Request header row (breadcrumb, Save + `Ctrl+S` hint) | `request_screen.dart` | Decision needed (breadcrumbs are out of scope; Save exists as an icon with a `Ctrl+S` tooltip) |
-| Missing | Table header ("Query Parameters", Key / Value) and "Bulk Edit" | `key_value_table.dart` | Decision needed (Bulk Edit is new behavior) |
+| Nit | `{{baseUrl}}` chips are listed under the URL field; Stitch shows them inline in the URL | `modules/requests/widgets/variable_highlight_controller.dart` | Fixed: variables are colored in the field (teal resolved, amber undefined); the chip row under the field is removed (tested) |
+| Nit | Request header row (breadcrumb, Save + `Ctrl+S` hint) | `request_screen.dart` | Not built: the plan lists breadcrumbs as out of scope; Save exists as an icon with a `Ctrl+S` tooltip |
+| Missing | Table header ("Query Parameters", Key / Value) and "Bulk Edit" | `key_value_table.dart` | Bulk Edit fixed (`key: value` lines, `# ` disables a row; tested). Table header not built (not in PRD) |
 | Nit | Empty response state: icon tile and `Ctrl+Enter` hint added; `RESPONSE` label with Status / Time / Size placeholders not added | `response_viewer.dart` | Fixed (placeholders skipped: not in PRD) |
 
 Reviewed: Auth tab (segmented None / Bearer / Basic / API key, helper text) and Body tab (none / JSON / form-data / urlencoded / raw, highlighted JSON editor) match PRD §5.3 with no findings. The Headers table is the same widget as Params.
@@ -71,6 +71,6 @@ Reviewed: Auth tab (segmented None / Bearer / Basic / API key, helper text) and 
 
 ## Summary (2026-11-12)
 
-- **Fixed:** status bar, nav rail label, sidebar header, filter hint, environment pill, Send hint, tab count badges, response idle / error states, active-tab top border, Save dialog default collection, snackbar style.
-- **Decision needed:** layout toggle and overflow menu, Bulk Edit, uppercase "COLLECTIONS" title and count, inline variable chips, request breadcrumb row.
+- **Fixed:** status bar, nav rail label, sidebar header (uppercase title), filter hint, environment pill, layout toggle and overflow menu, Send hint, tab count badges, Bulk Edit, inline variable colors, response idle / error states, active-tab top border, Save dialog default collection, snackbar style.
+- **Not built:** request breadcrumb row (out of scope per the plan), table header row (not in PRD).
 - **Not done:** Stitch HTML was read for screen #1 only; the app was not run against a live Supabase for this phase (all checks are widget tests and goldens).

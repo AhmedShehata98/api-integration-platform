@@ -367,10 +367,11 @@ badges, breadcrumbs) are ignored.
 `test/app/no_wrap_audit_test.dart` for screens it does not cover yet;
 `test/core/ui/theme/contrast_test.dart` still passes.
 
-**Status (2026-11-12):** harness, audit and most fixes are done (see
-`ui-audit.md`). Open: five items marked `Decision needed` (layout toggle and
-overflow menu, Bulk Edit, uppercase title and count, inline variable chips,
-breadcrumb row). Only the screenshots were exported from Stitch, not the HTML.
+**Status (2026-11-12):** harness, audit and fixes are done (see
+`ui-audit.md`), including the layout toggle, overflow menu, Bulk Edit, inline
+variable colors and the uppercase sidebar title. Not built: the request
+breadcrumb row (out of scope). Only the screenshots were exported from Stitch,
+not the HTML.
 
 **Done when** every screen has an audit section in `ui-audit.md` with all items
 fixed (or a recorded decision), goldens exist for each screen in both themes,

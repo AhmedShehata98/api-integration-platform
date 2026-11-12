@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test_point/core/error/result.dart';
-import 'package:test_point/core/ui/widgets/variable_chip.dart';
+import 'package:test_point/core/ui/theme/http_colors.dart';
 import 'package:test_point/modules/environments/environments.dart';
 import 'package:test_point/modules/requests/models/prepared_request.dart';
 import 'package:test_point/modules/requests/requests.dart';
@@ -11,6 +11,24 @@ import '../../../support/fake_backend.dart';
 import '../../../support/pump_app.dart';
 
 class MockHttpRequestRepository extends Mock implements HttpRequestRepository {}
+
+/// Color of the first `{{variable}}` drawn in the URL field.
+Color? _variableColor(WidgetTester tester) {
+  final field = tester.widget<TextField>(_urlField);
+  final span = field.controller!.buildTextSpan(
+    context: tester.element(_urlField),
+    withComposing: false,
+  );
+  final variable = span.children!.whereType<TextSpan>().firstWhere(
+    (s) => s.text!.startsWith('{{'),
+  );
+  return variable.style!.color;
+}
+
+extension on WidgetTester {
+  Color get amber => element(_urlField).httpColors.status4xx;
+  Color get teal => Theme.of(element(_urlField)).colorScheme.primary;
+}
 
 final _urlField = find.byWidgetPredicate(
   (w) => w is TextField && w.decoration?.hintText == 'Enter request URL',
@@ -103,7 +121,7 @@ void main() {
     );
   });
 
-  testWidgets('an undefined URL variable shows an amber chip and blocks send', (
+  testWidgets('an undefined URL variable is amber in the URL and blocks send', (
     tester,
   ) async {
     await pumpApp(tester, _store());
@@ -112,20 +130,14 @@ void main() {
     await tester.pumpAndSettle();
 
     // No environment is selected, so the variable is undefined.
-    expect(
-      tester.widget<VariableChip>(find.byType(VariableChip)).resolved,
-      false,
-    );
+    expect(_variableColor(tester), tester.amber);
 
     await tester.tap(find.text('Send'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Undefined variable'), findsOneWidget);
 
     await _pickEnvironment(tester, 'Dev');
-    expect(
-      tester.widget<VariableChip>(find.byType(VariableChip)).resolved,
-      true,
-    );
+    expect(_variableColor(tester), tester.teal);
   });
 
   testWidgets('status bar shows the active environment and base URL', (

@@ -146,10 +146,13 @@ class _Header extends ConsumerWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        'Collections',
+                        'COLLECTIONS',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleSmall,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          letterSpacing: 0.8,
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
