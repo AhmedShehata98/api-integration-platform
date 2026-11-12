@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:test_point/core/error/failure.dart';
+import 'package:test_point/modules/requests/models/send_state.dart';
 import 'package:test_point/modules/requests/requests.dart';
 
 import '../../../support/pump_app.dart';
@@ -48,5 +50,23 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('a failed request shows the reason and a Retry button', (
+    tester,
+  ) async {
+    final container = await pumpApp(tester, sampleStore());
+    await tester.tap(find.text('New request').first);
+    await tester.pumpAndSettle();
+    final tabs = container.read(requestTabsProvider.notifier);
+    tabs.setSendState(
+      container.read(requestTabsProvider).activeId!,
+      const SendFailed(NetworkFailure('Request timed out.')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Request failed'), findsOneWidget);
+    expect(find.text('Request timed out.'), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
   });
 }

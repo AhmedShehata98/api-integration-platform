@@ -33,10 +33,10 @@ Status values: **Fixed** · **Open** · **Decision needed** (conflicting or need
 | --- | --- | --- | --- |
 | Missing | Send button has no `Ctrl+Enter` hint | `modules/requests/widgets/request_bar.dart` | Fixed (hint inside the button; tested) |
 | Missing | Tabs have no count badges (Params 2, Headers 3) | `modules/requests/widgets/request_editor.dart` | Fixed (enabled, non-empty rows; hidden at 0; tested) |
-| Wrong | `{{baseUrl}}` chip is shown under the URL field; Stitch shows it inline in the URL | `modules/requests/widgets/url_field.dart` | Open |
-| Missing | Request header row (collection / name, Save + `Ctrl+S` hint) | `request_screen.dart` | Open |
+| Nit | `{{baseUrl}}` chips are listed under the URL field; Stitch shows them inline in the URL | `modules/requests/widgets/url_field.dart` | Decision needed (PRD only asks for amber chips for unresolved variables; inline chips need a custom text field) |
+| Nit | Request header row (breadcrumb, Save + `Ctrl+S` hint) | `request_screen.dart` | Decision needed (breadcrumbs are out of scope; Save exists as an icon with a `Ctrl+S` tooltip) |
 | Missing | Table header ("Query Parameters", Key / Value) and "Bulk Edit" | `key_value_table.dart` | Decision needed (Bulk Edit is new behavior) |
-| Nit | Empty response state has no card, shortcut chip, or `RESPONSE` label with Status / Time / Size placeholders | `response_viewer.dart` | Open |
+| Nit | Empty response state: icon tile and `Ctrl+Enter` hint added; `RESPONSE` label with Status / Time / Size placeholders not added | `response_viewer.dart` | Fixed (placeholders skipped: not in PRD) |
 
 Not reviewed in detail yet: Body and Auth tab captures (`02_*`, `03_*`).
 
@@ -46,7 +46,7 @@ Not reviewed in detail yet: Body and Auth tab captures (`02_*`, `03_*`).
 | --- | --- | --- | --- |
 | OK | 200 chip is green with time and size; JSON highlighted; Pretty / Raw and copy present | `response_viewer.dart` | — |
 | Missing | `Ctrl+F` search affordance is not visible in the capture | `response_viewer.dart` | Open (verify) |
-| Nit | Error state is an icon and one line; Stitch has a card with a title, hint and Retry | `response_viewer.dart` | Open |
+| Nit | Error state was an icon and one line; Stitch has a title and Retry | `response_viewer.dart` | Fixed (icon tile, "Request failed", message, Retry; tested) |
 | Nit | Loading state not reviewed against Stitch | `response_viewer.dart` | Open |
 
 ## 6 — Autocomplete & method menu

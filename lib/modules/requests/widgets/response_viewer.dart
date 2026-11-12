@@ -32,7 +32,7 @@ class ResponseViewer extends ConsumerWidget {
   }
 }
 
-class _Message extends StatelessWidget {
+class _Message extends ConsumerWidget {
   const _Message({
     required this.icon,
     required this.text,
@@ -44,16 +44,45 @@ class _Message extends StatelessWidget {
   final bool isError;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    final color = isError ? scheme.error : scheme.onSurfaceVariant;
+    final color = isError ? scheme.error : scheme.primary;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 36, color: color),
-          const SizedBox(height: AppSpacing.sm),
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(AppRadius.cardLarge),
+              border: Border.all(color: scheme.outlineVariant),
+            ),
+            child: Icon(icon, size: 28, color: color),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          if (isError) ...[
+            Text(
+              'Request failed',
+              maxLines: 1,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+          ],
           Text(text, maxLines: 2, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: AppSpacing.sm),
+          if (isError)
+            TextButton(
+              onPressed: ref.read(sendStateProvider.notifier).send,
+              child: const Text('Retry'),
+            )
+          else
+            Text(
+              'Press Ctrl+Enter to send',
+              maxLines: 1,
+              style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+            ),
         ],
       ),
     );
