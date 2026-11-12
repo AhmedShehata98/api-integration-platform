@@ -310,9 +310,12 @@ and sign out back to a fresh guest session.
   tooltips on all icon buttons; large response bodies split into lines off the main
   isolate; Windows release build; cold start measured at about 1.2 s to window shown
   (release build, Windows, local Supabase).
-- Open: light-theme comparison with the Stitch light variants (no light Account
-  screen yet); Linux runner for `testpoint://`; macOS and Linux builds; keyboard
-  control for the split-pane divider; demo of US-1 to US-10 on all three platforms.
+- Done: keyboard control for the split-pane divider (Tab to focus; arrow keys move it by 16 px,
+  Shift 64 px; Enter or Home resets; tested).  
+- Open: light-theme comparison with a Stitch light variant (only one early light screen
+  exists; the Phase 7 audit reviewed the light captures instead); Linux runner for
+  `testpoint://` (written, not built); macOS and Linux builds; demo of US-1 to US-10 on
+  all three platforms.
 
 **Part B done when** all PRD MVP stories (US-1 to US-10) can be demonstrated on all
 three desktop platforms.

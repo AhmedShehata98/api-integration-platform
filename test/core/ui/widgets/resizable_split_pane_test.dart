@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:test_point/core/ui/widgets/resizable_split_pane.dart';
 
@@ -176,6 +177,76 @@ void main() {
     await tester.tapAt(const Offset(100, 100));
 
     expect(taps, 1);
+  });
+
+  group('keyboard', () {
+    // Tab moves focus to the only focusable thing: the handle.
+    Future<void> focusHandle(WidgetTester tester) async {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+    }
+
+    testWidgets('arrow keys move a vertical split; Shift moves further', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_pane());
+      final start = _size(tester, _first);
+      await focusHandle(tester);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pump();
+      expect(_size(tester, _first), closeTo(start + 16, 0.5));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pump();
+      expect(_size(tester, _first), closeTo(start - 16, 0.5));
+
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pump();
+      expect(_size(tester, _first), closeTo(start - 16 + 64, 0.5));
+    });
+
+    testWidgets('Enter restores the initial split', (tester) async {
+      await tester.pumpWidget(_pane());
+      final start = _size(tester, _first);
+      await focusHandle(tester);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pump();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(_size(tester, _first), closeTo(start, 0.5));
+    });
+
+    testWidgets('left and right arrows move a horizontal split', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_pane(axis: Axis.horizontal));
+      final start = _size(tester, _first, vertical: false);
+      await focusHandle(tester);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pump();
+      expect(_size(tester, _first, vertical: false), closeTo(start + 16, 0.5));
+
+      // Up / Down do nothing along a horizontal split.
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pump();
+      expect(_size(tester, _first, vertical: false), closeTo(start + 16, 0.5));
+    });
+
+    testWidgets('the split never goes below the minimum sizes', (tester) async {
+      await tester.pumpWidget(_pane());
+      await focusHandle(tester);
+      for (var i = 0; i < 60; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      }
+      await tester.pump();
+      expect(_size(tester, _first), closeTo(100, 0.5));
+    });
   });
 }
 
