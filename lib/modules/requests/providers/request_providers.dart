@@ -112,3 +112,7 @@ class SendNotifier extends Notifier<SendState> {
     ref.read(requestTabsProvider.notifier).setSendState(id, const SendIdle());
   }
 }
+
+/// Whether the request builder sits above the response (true) or beside it.
+/// The app wires this to the user's layout setting (see `app/di/`).
+final requestPanesStackedProvider = Provider<bool>((ref) => true);

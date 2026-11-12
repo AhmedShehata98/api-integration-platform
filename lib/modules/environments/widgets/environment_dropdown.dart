@@ -32,7 +32,13 @@ class EnvironmentDropdown extends ConsumerWidget {
       builder: (context, controller, _) => TextButton.icon(
         onPressed: () =>
             controller.isOpen ? controller.close() : controller.open(),
-        icon: const Icon(Icons.layers_outlined, size: 18),
+        icon: Icon(
+          Icons.circle,
+          size: 8,
+          color: active == null
+              ? Theme.of(context).colorScheme.onSurfaceVariant
+              : Theme.of(context).colorScheme.primary,
+        ),
         label: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 160),
           child: Text(
@@ -43,7 +49,10 @@ class EnvironmentDropdown extends ConsumerWidget {
         ),
         iconAlignment: IconAlignment.start,
         style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          shape: StadiumBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+          ),
         ),
       ),
     );

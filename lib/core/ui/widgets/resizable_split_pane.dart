@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:test_point/core/ui/theme/app_spacing.dart';
 
 /// Two panels separated by a draggable handle.
@@ -102,8 +103,9 @@ class _ResizableSplitPaneState extends State<ResizableSplitPane> {
   }
 }
 
-/// The draggable divider: a thin line with a grip, highlighted on hover and
-/// while dragging.
+/// The draggable divider: a thin line with a grip, highlighted on hover,
+/// while dragging and when focused. With focus, the arrow keys along the split
+/// direction move it (16 px, 64 px with Shift) and Enter or Home resets it.
 class _Handle extends StatefulWidget {
   const _Handle({
     required this.axis,
@@ -120,14 +122,42 @@ class _Handle extends StatefulWidget {
 }
 
 class _HandleState extends State<_Handle> {
+  static const _step = 16.0;
+  static const _bigStep = 64.0;
+
   bool _hovered = false;
   bool _dragging = false;
+  bool _focused = false;
+
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent) return KeyEventResult.ignored;
+    final vertical = widget.axis == Axis.vertical;
+    final key = event.logicalKey;
+    final step = HardwareKeyboard.instance.isShiftPressed ? _bigStep : _step;
+    if (key ==
+        (vertical
+            ? LogicalKeyboardKey.arrowUp
+            : LogicalKeyboardKey.arrowLeft)) {
+      widget.onDrag(-step);
+    } else if (key ==
+        (vertical
+            ? LogicalKeyboardKey.arrowDown
+            : LogicalKeyboardKey.arrowRight)) {
+      widget.onDrag(step);
+    } else if (key == LogicalKeyboardKey.enter ||
+        key == LogicalKeyboardKey.home) {
+      widget.onReset();
+    } else {
+      return KeyEventResult.ignored;
+    }
+    return KeyEventResult.handled;
+  }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final vertical = widget.axis == Axis.vertical;
-    final active = _hovered || _dragging;
+    final active = _hovered || _dragging || _focused;
     final lineColor = _dragging
         ? scheme.primary
         : _hovered
@@ -135,66 +165,70 @@ class _HandleState extends State<_Handle> {
         : scheme.outline;
     final gripColor = active ? scheme.primary : scheme.onSurfaceVariant;
 
-    return MouseRegion(
-      cursor: vertical
-          ? SystemMouseCursors.resizeRow
-          : SystemMouseCursors.resizeColumn,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onDoubleTap: widget.onReset,
-        onVerticalDragStart: vertical ? (_) => _setDragging(true) : null,
-        onVerticalDragUpdate: vertical
-            ? (d) => widget.onDrag(d.delta.dy)
-            : null,
-        onVerticalDragEnd: vertical ? (_) => _setDragging(false) : null,
-        onVerticalDragCancel: vertical ? () => _setDragging(false) : null,
-        onHorizontalDragStart: vertical ? null : (_) => _setDragging(true),
-        onHorizontalDragUpdate: vertical
-            ? null
-            : (d) => widget.onDrag(d.delta.dx),
-        onHorizontalDragEnd: vertical ? null : (_) => _setDragging(false),
-        onHorizontalDragCancel: vertical ? null : () => _setDragging(false),
-        child: Semantics(
-          label: 'Resize panels',
-          child: SizedBox(
-            width: vertical ? null : ResizableSplitPane.handleThickness,
-            height: vertical ? ResizableSplitPane.handleThickness : null,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // The line.
-                Container(
-                  width: vertical ? double.infinity : (active ? 2 : 1),
-                  height: vertical ? (active ? 2 : 1) : double.infinity,
-                  color: lineColor,
-                ),
-                // The grip: two short bars.
-                Container(
-                  width: vertical ? 36 : 8,
-                  height: vertical ? 8 : 36,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: scheme.surfaceContainer,
-                    borderRadius: BorderRadius.circular(AppRadius.tag),
+    return Focus(
+      onKeyEvent: _onKey,
+      onFocusChange: (focused) => setState(() => _focused = focused),
+      child: MouseRegion(
+        cursor: vertical
+            ? SystemMouseCursors.resizeRow
+            : SystemMouseCursors.resizeColumn,
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onDoubleTap: widget.onReset,
+          onVerticalDragStart: vertical ? (_) => _setDragging(true) : null,
+          onVerticalDragUpdate: vertical
+              ? (d) => widget.onDrag(d.delta.dy)
+              : null,
+          onVerticalDragEnd: vertical ? (_) => _setDragging(false) : null,
+          onVerticalDragCancel: vertical ? () => _setDragging(false) : null,
+          onHorizontalDragStart: vertical ? null : (_) => _setDragging(true),
+          onHorizontalDragUpdate: vertical
+              ? null
+              : (d) => widget.onDrag(d.delta.dx),
+          onHorizontalDragEnd: vertical ? null : (_) => _setDragging(false),
+          onHorizontalDragCancel: vertical ? null : () => _setDragging(false),
+          child: Semantics(
+            label: 'Resize panels',
+            child: SizedBox(
+              width: vertical ? null : ResizableSplitPane.handleThickness,
+              height: vertical ? ResizableSplitPane.handleThickness : null,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // The line.
+                  Container(
+                    width: vertical ? double.infinity : (active ? 2 : 1),
+                    height: vertical ? (active ? 2 : 1) : double.infinity,
+                    color: lineColor,
                   ),
-                  child: Flex(
-                    direction: vertical ? Axis.vertical : Axis.horizontal,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (var i = 0; i < 2; i++) ...[
-                        if (i > 0) const SizedBox.square(dimension: 2),
-                        Container(
-                          width: vertical ? 20 : 2,
-                          height: vertical ? 2 : 20,
-                          color: gripColor,
-                        ),
+                  // The grip: two short bars.
+                  Container(
+                    width: vertical ? 36 : 8,
+                    height: vertical ? 8 : 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(AppRadius.tag),
+                    ),
+                    child: Flex(
+                      direction: vertical ? Axis.vertical : Axis.horizontal,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (var i = 0; i < 2; i++) ...[
+                          if (i > 0) const SizedBox.square(dimension: 2),
+                          Container(
+                            width: vertical ? 20 : 2,
+                            height: vertical ? 2 : 20,
+                            color: gripColor,
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

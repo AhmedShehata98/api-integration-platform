@@ -43,7 +43,8 @@ void main() {
 
       expect(find.text('Welcome to Test Point'), findsOneWidget);
       // Nav rail label and the sidebar header.
-      expect(find.text('Collections'), findsNWidgets(2));
+      expect(find.text('Collections'), findsOneWidget); // nav rail
+      expect(find.text('COLLECTIONS'), findsOneWidget); // sidebar header
       expect(find.text('Proxy: Off'), findsOneWidget);
     });
   }
