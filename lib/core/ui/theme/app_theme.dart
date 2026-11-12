@@ -87,6 +87,18 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(AppRadius.dialog),
         ),
       ),
+      // Floating, on theme surfaces; the Material default is a full-width bar
+      // in the inverse colours that covers the status bar.
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        width: 480,
+        backgroundColor: scheme.surfaceContainerHighest,
+        contentTextStyle: text.bodyMedium?.copyWith(color: scheme.onSurface),
+        actionTextColor: scheme.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.card),
+        ),
+      ),
       extensions: [httpColors],
     );
   }

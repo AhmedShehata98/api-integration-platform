@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:test_point/core/error/failure.dart';
 import 'package:test_point/core/error/result.dart';
@@ -170,6 +171,7 @@ Future<ProviderContainer> _open(
   FakeStore? store,
   AuthRepository? auth,
   String http = 'ok',
+  List<Override> extraOverrides = const [],
 }) async {
   final container = await pumpApp(
     tester,
@@ -178,6 +180,7 @@ Future<ProviderContainer> _open(
     auth: auth,
     extraOverrides: [
       httpRequestRepositoryProvider.overrideWithValue(_FakeHttp(http)),
+      ...extraOverrides,
     ],
   );
   // The Stitch screens show the Development environment as active.
@@ -394,6 +397,23 @@ void main() {
         await tester.tap(find.text('New'));
         await tester.pumpAndSettle();
         await _capture(tester, '12_new_menu', name);
+      });
+
+      testWidgets('12 failure snackbar', (tester) async {
+        // A GitHub redirect that fails while no dialog waits for it.
+        await _open(
+          tester,
+          theme,
+          extraOverrides: [
+            authCallbackErrorProvider.overrideWith(
+              (_) =>
+                  Stream.value(const AuthFailure('GitHub access was denied.')),
+            ),
+          ],
+        );
+        await tester.pump();
+        await tester.pump();
+        await _capture(tester, '12_snackbar', name);
       });
 
       testWidgets('13 account guest', (tester) async {

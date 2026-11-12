@@ -13,7 +13,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [authCallbackErrorProvider.overrideWith((_) => errors.stream)],
+        overrides: [
+          authCallbackErrorProvider.overrideWith((_) => errors.stream),
+        ],
         child: const MaterialApp(
           home: Scaffold(
             body: AuthCallbackErrorListener(child: SizedBox.expand()),

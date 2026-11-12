@@ -94,8 +94,9 @@ class _TabItem extends StatelessWidget {
         padding: const EdgeInsets.only(left: AppSpacing.md),
         decoration: BoxDecoration(
           color: active ? scheme.surfaceContainerHigh : null,
+          // Teal top edge on the active tab, as in the Stitch shell.
           border: Border(
-            bottom: BorderSide(
+            top: BorderSide(
               width: 2,
               color: active ? scheme.primary : Colors.transparent,
             ),

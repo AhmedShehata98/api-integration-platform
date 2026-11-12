@@ -73,8 +73,13 @@ class _SaveRequestDialogState extends ConsumerState<SaveRequestDialog> {
   Widget build(BuildContext context) {
     final collections = ref.watch(collectionsProvider).value ?? const [];
     final ids = {for (final c in collections) c.id};
-    // With no collections yet (or a stale choice) the only option is a new one.
-    final selected = ids.contains(_selected) ? _selected! : _newCollection;
+    // Default to the first collection; with none yet, the only option is a new
+    // one. A stale choice falls back the same way.
+    final selected = ids.contains(_selected)
+        ? _selected!
+        : collections.isEmpty
+        ? _newCollection
+        : collections.first.id;
 
     return AlertDialog(
       title: const Text('Save request'),

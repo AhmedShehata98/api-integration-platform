@@ -69,4 +69,24 @@ void main() {
     expect(find.text('Request timed out.'), findsOneWidget);
     expect(find.text('Retry'), findsOneWidget);
   });
+
+  testWidgets('Save preselects the first collection when one exists', (
+    tester,
+  ) async {
+    await pumpApp(tester, sampleStore());
+    await tester.tap(find.text('New request').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Save (Ctrl+S)'));
+    await tester.pumpAndSettle();
+
+    final dialog = find.byType(AlertDialog);
+    expect(
+      find.descendant(of: dialog, matching: find.text('Users API')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: dialog, matching: find.text('Collection name')),
+      findsNothing,
+    );
+  });
 }
