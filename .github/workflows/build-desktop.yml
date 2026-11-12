@@ -30,17 +30,24 @@ jobs:
         include:
           - os: windows-latest
             platform: windows
-            archive: windows-release.zip
           - os: ubuntu-latest
             platform: linux
-            archive: linux-release.tar.gz
           - os: macos-latest
             platform: macos
-            archive: macos-release.zip
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set archive name
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION="$GITHUB_REF_NAME"
+          else
+            VERSION="dev-${GITHUB_SHA::7}"
+          fi
+          echo "ARCHIVE=api-integration-platform-${VERSION}-${{ matrix.platform }}.zip" >> "$GITHUB_ENV"
 
       - name: Check Supabase secrets
         shell: bash
@@ -91,20 +98,20 @@ jobs:
         run: |
           Compress-Archive `
             -Path build/windows/x64/runner/Release/* `
-            -DestinationPath ${{ matrix.archive }}
+            -DestinationPath $env:ARCHIVE
 
       - name: Package Linux
         if: matrix.platform == 'linux'
         run: |
-          tar -czf ${{ matrix.archive }} \
-            -C build/linux/x64/release/bundle .
+          cd build/linux/x64/release/bundle
+          zip -ry "$GITHUB_WORKSPACE/$ARCHIVE" .
 
       - name: Package macOS
         if: matrix.platform == 'macos'
         run: |
           ditto -c -k --sequesterRsrc --keepParent \
             build/macos/Build/Products/Release/*.app \
-            ${{ matrix.archive }}
+            "$ARCHIVE"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
