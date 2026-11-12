@@ -16,11 +16,26 @@ const authRedirectUrl = 'testpoint://auth-callback';
 /// How long to wait for the user to finish in the browser.
 const _browserTimeout = Duration(minutes: 5);
 
+/// How long a plain Supabase auth call may take before it counts as a network
+/// failure. Without it a blocked connection leaves the app loading forever.
+const _requestTimeout = Duration(seconds: 20);
+
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl(this._client);
+  AuthRepositoryImpl(this._client) {
+    // Listen from the start: a redirect that opened the app fresh can fail
+    // before any widget exists. A single-subscription controller buffers it.
+    // ignore: cancel_subscriptions, lives as long as the repository (app).
+    _client.auth.onAuthStateChange.listen(
+      (_) {},
+      onError: (Object error) {
+        if (_pending == null) _callbackErrors.add(_mapError(error));
+      },
+    );
+  }
 
   final supabase.SupabaseClient _client;
 
+  final _callbackErrors = StreamController<Failure>();
   Completer<Result<AuthUser>>? _pending;
   StreamSubscription<supabase.AuthState>? _pendingSubscription;
   Timer? _pendingTimeout;
@@ -38,9 +53,15 @@ class AuthRepositoryImpl implements AuthRepository {
       .distinct();
 
   @override
+  Stream<Failure> get callbackErrors => _callbackErrors.stream;
+
+  @override
   Future<Result<AuthUser>> signInAnonymously() async {
     try {
-      final user = _toAuthUser((await _client.auth.signInAnonymously()).user);
+      final response = await _client.auth.signInAnonymously().timeout(
+        _requestTimeout,
+      );
+      final user = _toAuthUser(response.user);
       if (user == null) {
         return const Result.failure(
           AuthFailure('Could not start a guest session.'),
@@ -76,7 +97,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Result<void>> signOut() async {
     try {
-      await _client.auth.signOut();
+      await _client.auth.signOut().timeout(_requestTimeout);
       return const Result.success(null);
     } on Object catch (error) {
       return Result.failure(_mapError(error));

@@ -27,6 +27,7 @@ MockAuthRepository stubAuth({AuthUser? user = guestUser}) {
   final repository = MockAuthRepository();
   when(() => repository.currentUser).thenReturn(user);
   when(() => repository.userChanges).thenAnswer((_) => const Stream.empty());
+  when(() => repository.callbackErrors).thenAnswer((_) => const Stream.empty());
   when(() => repository.signInAnonymously())
       .thenAnswer((_) async => const Result.success(guestUser));
   return repository;
@@ -322,6 +323,9 @@ class FakeAuthRepository implements AuthRepository {
 
   @override
   Stream<AuthUser?> get userChanges => _changes.stream;
+
+  @override
+  Stream<Failure> get callbackErrors => const Stream.empty();
 
   @override
   Future<Result<AuthUser>> signInAnonymously() async {

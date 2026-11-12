@@ -6,4 +6,5 @@ export 'models/auth_user.dart';
 export 'models/github_account_exists_failure.dart';
 export 'providers/auth_providers.dart';
 export 'repositories/auth_repository.dart'; // abstract contract only
+export 'widgets/auth_callback_error_listener.dart';
 export 'widgets/user_avatar.dart';

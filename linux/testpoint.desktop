@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Test Point
+Comment=API integration and testing
+Exec=test_point %u
+Terminal=false
+Categories=Development;
+MimeType=x-scheme-handler/testpoint;

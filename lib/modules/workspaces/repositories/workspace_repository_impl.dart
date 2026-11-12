@@ -5,6 +5,9 @@ import 'package:test_point/core/error/result.dart';
 import 'package:test_point/modules/workspaces/models/workspace.dart';
 import 'package:test_point/modules/workspaces/repositories/workspace_repository.dart';
 
+/// Without a limit a blocked connection keeps the shell loading forever.
+const _requestTimeout = Duration(seconds: 20);
+
 class WorkspaceRepositoryImpl implements WorkspaceRepository {
   WorkspaceRepositoryImpl(this._client);
 
@@ -19,7 +22,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           .select()
           .order('created_at')
           .limit(1)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(_requestTimeout);
       if (row == null) {
         return const Result.failure(StorageFailure('No workspace found.'));
       }
