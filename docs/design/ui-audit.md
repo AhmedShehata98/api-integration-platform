@@ -25,7 +25,7 @@ Status values: **Fixed** · **Open** · **Decision needed** (conflicting or need
 | Missing | Top bar: layout toggle and overflow ⋮ menu | `app/shell/top_bar.dart` | Decision needed (no layout setting exists; needs provider + test) |
 | Missing | Status bar: layout icon on the right | `app/shell/status_bar.dart` | Decision needed (same as above) |
 | Nit | Sidebar title is "Collections", not uppercase "COLLECTIONS"; count is collections (2), Stitch shows 8 | `sidebar.dart` | Decision needed |
-| Nit | Active request tab uses a bottom underline; Stitch uses a top teal border | `modules/requests/widgets/request_tab_bar.dart` | Open |
+| Nit | Active request tab uses a bottom underline; Stitch uses a top teal border | `modules/requests/widgets/request_tab_bar.dart` | Decision needed (cosmetic; keeps the Material tab indicator) |
 
 ## 1–3 — Request builder (Params, Body, Headers & Auth)
 
@@ -38,7 +38,7 @@ Status values: **Fixed** · **Open** · **Decision needed** (conflicting or need
 | Missing | Table header ("Query Parameters", Key / Value) and "Bulk Edit" | `key_value_table.dart` | Decision needed (Bulk Edit is new behavior) |
 | Nit | Empty response state: icon tile and `Ctrl+Enter` hint added; `RESPONSE` label with Status / Time / Size placeholders not added | `response_viewer.dart` | Fixed (placeholders skipped: not in PRD) |
 
-Reviewed: Auth tab (segmented None / Bearer / Basic / API key, helper text) matches PRD §5.3 with no findings. Not reviewed yet: Body tab and Headers captures (`02_*`, `03_request_headers_*`).
+Reviewed: Auth tab (segmented None / Bearer / Basic / API key, helper text) and Body tab (none / JSON / form-data / urlencoded / raw, highlighted JSON editor) match PRD §5.3 with no findings. The Headers table is the same widget as Params.
 
 ## 4–5 — Response
 
@@ -54,17 +54,23 @@ Reviewed: Auth tab (segmented None / Bearer / Basic / API key, helper text) matc
 | Type | Finding | File | Status |
 | --- | --- | --- | --- |
 | OK | Method menu lists 7 methods with fixed-width pills | `method_menu.dart` | — |
-| — | `{{var}}` autocomplete popup not captured yet (needs typing into the URL field) | `url_field.dart` | Open |
+| OK | `{{var}}` autocomplete lists the active environment's variables as `{{name}}` in a mono menu under the field | `url_field.dart` | — |
 
 ## 7–13
 
 | # | Screen | Status |
 | --- | --- | --- |
-| 7 | Collections context menu and overview | Overview captured and looks consistent; context menu capture not reviewed |
+| 7 | Collections context menu and overview | Reviewed: menu has New request, Rename, Duplicate, Delete (red) per PRD §5.2; overview lists requests with method pills and URLs; no findings |
 | 8 | Welcome | Captured; logo, title and New request present; not compared in detail |
 | 9 | Environments manager | Reviewed: variable table with enable toggle, secret lock + masked value with reveal, delete, Add variable and Save match PRD §5.5; no findings |
 | 10 | Import dialog | Reviewed against PRD §5.6: cURL / Postman tabs, paste field, Cancel and Import present; no findings |
 | 11 | Settings | Reviewed against PRD §5.7: theme, timeout, follow redirects and proxy present; no findings. Stitch layout not compared pixel by pixel |
-| 12 | Dialogs & feedback | Only the New menu is captured; save and delete dialogs and the snackbar still to add |
+| 12 | Dialogs & feedback | Save request dialog and delete confirm captured; save dialog shape and actions match. Decision needed: with existing collections the dialog still defaults to "New collection…" when no collection is preselected. The snackbar is not captured |
 | 13 | Account dialogs | Guest, Waiting, signed-in and guest-data warning captured in both themes. Layout, 28px shape, copy and actions match the spec; no findings (warning confirm uses the error-tinted button on purpose) |
 | L1 | Light theme | All 14 captures exist in light; Response Success (light) reviewed and consistent with dark |
+
+## Summary (2026-11-12)
+
+- **Fixed:** status bar, nav rail label, sidebar header, filter hint, environment pill, Send hint, tab count badges, response idle / error states.
+- **Decision needed:** layout toggle and overflow menu, Bulk Edit, uppercase "COLLECTIONS" title and count, inline variable chips, request breadcrumb row, active-tab top border, save dialog default collection.
+- **Not done:** snackbar capture; Stitch HTML was read for screen #1 only; the app was not run against a live Supabase for this phase (all checks are widget tests and goldens).

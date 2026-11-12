@@ -18,6 +18,7 @@ import 'package:test_point/modules/environments/environments.dart';
 import 'package:test_point/modules/requests/models/prepared_request.dart';
 import 'package:test_point/modules/requests/requests.dart';
 import 'package:test_point/modules/requests/widgets/method_menu.dart';
+import 'package:test_point/modules/requests/widgets/url_field.dart';
 
 import '../../support/fake_backend.dart';
 import '../../support/pump_app.dart';
@@ -265,7 +266,7 @@ void main() {
         await _open(tester, theme);
         await _openRequest(tester, 'Create pet');
         await tester.tap(find.widgetWithText(Tab, 'Body'));
-        await tester.pumpAndSettle();
+        await _settleAsync(tester);
         await _capture(tester, '02_request_body', name);
       });
 
@@ -310,6 +311,39 @@ void main() {
         await tester.tap(find.byType(MethodMenu));
         await tester.pumpAndSettle();
         await _capture(tester, '06_method_menu', name);
+      });
+
+      testWidgets('06 variable autocomplete', (tester) async {
+        await _open(tester, theme);
+        await tester.tap(find.text('New request').first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(UrlField));
+        await tester.enterText(find.byType(UrlField), '{{');
+        await tester.pumpAndSettle();
+        await _capture(tester, '06_variable_autocomplete', name);
+      });
+
+      testWidgets('12 save request dialog', (tester) async {
+        await _open(tester, theme);
+        await tester.tap(find.text('New request').first);
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(UrlField), 'https://a.test/pets');
+        await tester.pumpAndSettle();
+        await tester.tap(find.byTooltip('Save (Ctrl+S)'));
+        await tester.pumpAndSettle();
+        await _capture(tester, '12_save_request_dialog', name);
+      });
+
+      testWidgets('12 delete collection confirm', (tester) async {
+        await _open(tester, theme);
+        await tester.tap(
+          find.text('Petstore API').first,
+          buttons: kSecondaryButton,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Delete').last);
+        await tester.pumpAndSettle();
+        await _capture(tester, '12_delete_confirm', name);
       });
 
       testWidgets('07 collection context menu and overview', (tester) async {
