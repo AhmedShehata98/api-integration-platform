@@ -17,7 +17,8 @@ class _SaveIntent extends Intent {
   const _SaveIntent();
 }
 
-/// Request builder on top, response viewer below, with a draggable divider.
+/// Request builder and response viewer (stacked or side by side, see
+/// [requestPanesStackedProvider]) with a draggable divider.
 /// Shows an empty state when no request tab is open.
 class RequestScreen extends ConsumerWidget {
   const RequestScreen({super.key});
@@ -26,6 +27,7 @@ class RequestScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final activeId = ref.watch(requestTabsProvider.select((s) => s.activeId));
     if (activeId == null) return const _NoOpenRequests();
+    final stacked = ref.watch(requestPanesStackedProvider);
 
     return Shortcuts(
       shortcuts: const {
@@ -44,6 +46,9 @@ class RequestScreen extends ConsumerWidget {
         // Keyed by the active tab so every tab gets its own editors and
         // scroll state.
         child: ResizableSplitPane(
+          // Re-created on a layout change so the split restarts at its ratio.
+          key: ValueKey('split-$stacked'),
+          axis: stacked ? Axis.vertical : Axis.horizontal,
           initialRatio: 0.55,
           minFirstSize: 220,
           minSecondSize: 160,

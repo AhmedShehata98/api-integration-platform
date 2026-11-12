@@ -11,6 +11,9 @@ abstract class AppSettings with _$AppSettings {
     @Default(30) int timeoutSeconds,
     @Default(true) bool followRedirects,
 
+    /// Request above response (true) or side by side (false).
+    @Default(true) bool stackedLayout,
+
     /// Proxy URL; null means the proxy is off.
     String? proxyUrl,
   }) = _AppSettings;

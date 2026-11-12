@@ -50,6 +50,10 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state.themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark,
   );
 
+  /// Switches the request / response panes between stacked and side by side.
+  Future<Result<void>> toggleLayout() =>
+      update((s) => s.copyWith(stackedLayout: !s.stackedLayout));
+
   Future<Result<void>> setTimeoutSeconds(int seconds) =>
       update((s) => s.copyWith(timeoutSeconds: seconds));
 

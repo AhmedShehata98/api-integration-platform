@@ -9,6 +9,7 @@ const _themeKey = 'settings.themeMode';
 const _timeoutKey = 'settings.timeoutSeconds';
 const _redirectsKey = 'settings.followRedirects';
 const _proxyKey = 'settings.proxyUrl';
+const _stackedKey = 'settings.stackedLayout';
 
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl(this._prefs);
@@ -26,6 +27,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       followRedirects:
           _prefs.getBool(_redirectsKey) ?? defaults.followRedirects,
       proxyUrl: _prefs.getString(_proxyKey),
+      stackedLayout: _prefs.getBool(_stackedKey) ?? defaults.stackedLayout,
     );
   }
 
@@ -35,6 +37,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await _prefs.setString(_themeKey, settings.themeMode.name);
       await _prefs.setInt(_timeoutKey, settings.timeoutSeconds);
       await _prefs.setBool(_redirectsKey, settings.followRedirects);
+      await _prefs.setBool(_stackedKey, settings.stackedLayout);
       final proxy = settings.proxyUrl;
       if (proxy == null) {
         await _prefs.remove(_proxyKey);

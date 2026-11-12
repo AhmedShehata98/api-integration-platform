@@ -1,9 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_point/core/network/network_settings.dart';
 import 'package:test_point/modules/auth/auth.dart';
 import 'package:test_point/modules/collections/collections.dart';
 import 'package:test_point/modules/environments/environments.dart';
+import 'package:test_point/modules/requests/requests.dart';
 import 'package:test_point/modules/settings/settings.dart';
 
 /// App-level wiring between modules and `core`. Modules cannot import each
@@ -18,6 +20,10 @@ List<Override> moduleWiring() => [
       proxyUrl: settings.proxyUrl,
     );
   }),
+  // The layout toggle (top bar) is a device setting stored by `settings`.
+  requestPanesStackedProvider.overrideWith(
+    (ref) => ref.watch(settingsProvider.select((s) => s.stackedLayout)),
+  ),
   // Signing in to another account discards the guest's work: `auth` asks
   // whether there is any.
   guestHasDataProvider.overrideWith((ref) {

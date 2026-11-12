@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:test_point/app/shell/layout_toggle_button.dart';
 import 'package:test_point/core/ui/theme/app_spacing.dart';
 import 'package:test_point/modules/environments/environments.dart';
 import 'package:test_point/modules/settings/settings.dart';
@@ -57,6 +58,8 @@ class ShellStatusBar extends ConsumerWidget {
           ),
           const SizedBox(width: AppSpacing.lg),
           Text(proxyText, style: style, maxLines: 1),
+          const SizedBox(width: AppSpacing.xs),
+          const LayoutToggleButton(size: 16),
         ],
       ),
     );

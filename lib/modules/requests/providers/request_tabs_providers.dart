@@ -54,6 +54,9 @@ class RequestTabsNotifier extends Notifier<RequestTabsState> {
     return const RequestTabsState();
   }
 
+  /// Closes every tab and cancels their in-flight requests.
+  void closeAll() => _closeAll();
+
   void _closeAll() {
     final signals = ref.read(inFlightRequestsProvider);
     for (final signal in signals.values) {

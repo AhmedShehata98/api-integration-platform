@@ -89,4 +89,28 @@ void main() {
       findsNothing,
     );
   });
+
+  testWidgets('Bulk Edit edits the rows as text and back', (tester) async {
+    final container = await pumpApp(tester, sampleStore());
+    await tester.tap(find.text('New request').first);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Bulk Edit'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byType(TextField).last,
+      'limit: 20\n# debug: 1',
+    );
+    await tester.pumpAndSettle();
+
+    expect(container.read(requestDraftProvider).params, const [
+      KeyValue(key: 'limit', value: '20'),
+      KeyValue(key: 'debug', value: '1', enabled: false),
+    ]);
+
+    await tester.tap(find.text('Key-Value Edit'));
+    await tester.pumpAndSettle();
+    expect(find.text('limit'), findsOneWidget);
+    expect(find.text('debug'), findsOneWidget);
+  });
 }
