@@ -49,3 +49,5 @@ app.*.map.json
 
 # supabase/.env file
 supabase/.env
+
+production-publish-redme.md
