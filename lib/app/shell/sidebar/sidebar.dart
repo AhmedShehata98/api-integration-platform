@@ -140,20 +140,29 @@ class _Header extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Flexible(
-                child: Text(
-                  'Collections',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall,
+              // Title and count share the space left of "Import".
+              Expanded(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Collections',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '$count',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                '$count',
-                style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
-              ),
-              const Spacer(),
               Tooltip(
                 message: 'Import',
                 child: TextButton.icon(
