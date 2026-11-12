@@ -38,7 +38,7 @@ Status values: **Fixed** · **Open** · **Decision needed** (conflicting or need
 | Missing | Table header ("Query Parameters", Key / Value) and "Bulk Edit" | `key_value_table.dart` | Decision needed (Bulk Edit is new behavior) |
 | Nit | Empty response state: icon tile and `Ctrl+Enter` hint added; `RESPONSE` label with Status / Time / Size placeholders not added | `response_viewer.dart` | Fixed (placeholders skipped: not in PRD) |
 
-Not reviewed in detail yet: Body and Auth tab captures (`02_*`, `03_*`).
+Reviewed: Auth tab (segmented None / Bearer / Basic / API key, helper text) matches PRD §5.3 with no findings. Not reviewed yet: Body tab and Headers captures (`02_*`, `03_request_headers_*`).
 
 ## 4–5 — Response
 
@@ -62,9 +62,9 @@ Not reviewed in detail yet: Body and Auth tab captures (`02_*`, `03_*`).
 | --- | --- | --- |
 | 7 | Collections context menu and overview | Overview captured and looks consistent; context menu capture not reviewed |
 | 8 | Welcome | Captured; logo, title and New request present; not compared in detail |
-| 9 | Environments manager | Captured with an environment selected; not reviewed |
-| 10 | Import dialog | Captured; tabs and actions present; not compared in detail |
-| 11 | Settings | Captured; has Theme, timeout, redirects, proxy toggle; Stitch layout not compared |
+| 9 | Environments manager | Reviewed: variable table with enable toggle, secret lock + masked value with reveal, delete, Add variable and Save match PRD §5.5; no findings |
+| 10 | Import dialog | Reviewed against PRD §5.6: cURL / Postman tabs, paste field, Cancel and Import present; no findings |
+| 11 | Settings | Reviewed against PRD §5.7: theme, timeout, follow redirects and proxy present; no findings. Stitch layout not compared pixel by pixel |
 | 12 | Dialogs & feedback | Only the New menu is captured; save and delete dialogs and the snackbar still to add |
 | 13 | Account dialogs | Guest, Waiting, signed-in and guest-data warning captured in both themes. Layout, 28px shape, copy and actions match the spec; no findings (warning confirm uses the error-tinted button on purpose) |
 | L1 | Light theme | All 14 captures exist in light; Response Success (light) reviewed and consistent with dark |
