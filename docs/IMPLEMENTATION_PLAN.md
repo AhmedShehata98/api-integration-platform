@@ -1,6 +1,6 @@
 # Test Point — Implementation Plan (MVP)
 
-_Status: Draft · Last updated: 2026-11-10_
+_Status: Draft · Last updated: 2026-11-12_
 
 Related docs:
 - Product scope: [PRD.md](PRD.md)
@@ -273,9 +273,11 @@ _Moved here from the former Phase 5b. Method changed from email / password to Gi
     writes the per-user registry keys for development builds (an installer must
     do the same for releases).
   - **macOS (done):** `CFBundleURLTypes` in `macos/Runner/Info.plist`. Not built or tested yet.
-  - **Linux (open):** needs a `.desktop` file with `x-scheme-handler/testpoint`
-    and a unique `GApplication` that handles the command line instead of
-    `G_APPLICATION_NON_UNIQUE`. Not done; to be built and tested on Linux.
+  - **Linux (written, unbuilt):** `linux/testpoint.desktop` registers
+    `x-scheme-handler/testpoint`, and `linux/runner/my_application.cc` is now a
+    unique `GApplication` that handles the command line (raises the running
+    window on a second launch). Not built or tested yet; forwarding the link to
+    Dart on a running instance still needs checking on Linux.
 - Map Supabase `AuthException` cases (`identity_already_exists`, provider
   disabled, user cancelled / access denied, network) to `AuthFailure` with clear messages.
 - When the session user changes, reload the current workspace and clear open
@@ -308,12 +310,76 @@ and sign out back to a fresh guest session.
   tooltips on all icon buttons; large response bodies split into lines off the main
   isolate; Windows release build; cold start measured at about 1.2 s to window shown
   (release build, Windows, local Supabase).
-- Open: light-theme comparison with the Stitch light variants (no light Account
-  screen yet); Linux runner for `testpoint://`; macOS and Linux builds; keyboard
-  control for the split-pane divider; demo of US-1 to US-10 on all three platforms.
+- Done: keyboard control for the split-pane divider (Tab to focus; arrow keys move it by 16 px,
+  Shift 64 px; Enter or Home resets; tested).  
+- Open: light-theme comparison with a Stitch light variant (only one early light screen
+  exists; the Phase 7 audit reviewed the light captures instead); Linux runner for
+  `testpoint://` (written, not built); macOS and Linux builds; demo of US-1 to US-10 on
+  all three platforms.
 
 **Part B done when** all PRD MVP stories (US-1 to US-10) can be demonstrated on all
 three desktop platforms.
+
+### Phase 7 — Design Fidelity Audit
+
+Every screen was built while the Stitch designs were still changing (lost edits,
+screens #6–#9 never got the shell pass). This phase compares each built screen
+with its Stitch screen and fixes missing or wrong UI parts in Flutter. Stitch is
+not edited in this phase.
+
+**Source of truth when they disagree:** PRD scope + the shell standard in
+[design/stitch-mvp-progress.md](design/stitch-mvp-progress.md) → Stitch HTML →
+Stitch screenshot (can be stale). Out-of-scope items Stitch adds (Tests/Scripts
+tabs, Share, Run collection, Sync, Console/Zoom/UTF-8, `⌘` hints, version
+badges, breadcrumbs) are ignored.
+
+**Tasks**
+1. **Collect references:** download each screen's HTML and screenshot from
+   Stitch into `docs/design/stitch-export/<nn>-<slug>.html|png`.
+2. **Capture the app:** `test/app/design_audit/screen_captures_test.dart`
+   (tag `design-audit`) renders each screen at 1280×800 in dark and light themes
+   with the Stitch sample data (Petstore API, "Development" environment) and
+   writes golden PNGs.
+3. **Audit one screen at a time** and record findings
+   (`Missing / Wrong / Extra / Nit`, file, status) in `docs/design/ui-audit.md`.
+   Check: layout sizes (rail 72, top bar 44, sidebar 280, status bar 28, method
+   pill 52), spacing and radii tokens, theme-only colors, fonts, copy and
+   tooltips, `Ctrl` hints, states (hover, focus, selected, disabled, empty,
+   loading, error), no wrapping, light theme.
+4. **Fix** in this order: shell → shared widgets in `core/ui/widgets/` →
+   screens #1–#13 → light theme. One commit per screen. A fix that needs new
+   behavior goes through the module's provider/service with a unit test. An
+   unclear or conflicting design part is marked `Decision needed` and skipped.
+
+| # | Stitch screen | Main Flutter files |
+| --- | --- | --- |
+| S | Shell standard (from #1) | `app/shell/` (nav rail, top bar, status bar, sidebar), `core/ui/widgets/app_logo.dart`, auth `user_avatar.dart` |
+| 1–3 | Request — Params, Body, Headers & Auth | `modules/requests/screens/request_screen.dart`, `request_bar.dart`, `url_field.dart`, `key_value_table.dart`, `body_tab.dart`, `auth_tab.dart` |
+| 4–5 | Response — Success, Error & Loading | `response_viewer.dart`, `core/ui/widgets/status_chip.dart` |
+| 6 | URL autocomplete & method menu | `url_field.dart`, `method_menu.dart`, `variable_chip.dart` |
+| 7 | Collections — Context menu & Overview | `core/ui/widgets/context_menu.dart`, `app/screens/collection_overview_screen.dart` |
+| 8 | Welcome | `app/screens/welcome_screen.dart` |
+| 9 | Environments manager | `modules/environments/screens/environments_screen.dart`, `variable_table.dart`, `environment_dropdown.dart` |
+| 10 | Import dialog | `modules/import/widgets/import_dialog.dart` |
+| 11 | Settings | `modules/settings/screens/settings_screen.dart` |
+| 12 | Dialogs & feedback | `core/ui/widgets/` dialogs and snackbar, `save_request_dialog.dart` |
+| 13 | Account dialogs | `modules/auth/widgets/` dialogs |
+| L1 | Response Success (Light) | `core/ui/theme/app_theme.dart`, `http_colors.dart` |
+
+**Tests** golden captures for every screen in both themes; extend
+`test/app/no_wrap_audit_test.dart` for screens it does not cover yet;
+`test/core/ui/theme/contrast_test.dart` still passes.
+
+**Status (2026-11-12):** harness, audit and fixes are done (see
+`ui-audit.md`), including the layout toggle, overflow menu, Bulk Edit, inline
+variable colors and the uppercase sidebar title. Not built: the request
+breadcrumb row (out of scope). Only the screenshots were exported from Stitch,
+not the HTML.
+
+**Done when** every screen has an audit section in `ui-audit.md` with all items
+fixed (or a recorded decision), goldens exist for each screen in both themes,
+and `flutter analyze` and `flutter test` pass. This also closes the Part B
+"light-theme comparison" item.
 
 ---
 

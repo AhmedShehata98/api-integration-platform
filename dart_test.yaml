@@ -2,3 +2,6 @@ tags:
   # Needs a running local Supabase; skipped unless SUPABASE_URL and
   # SUPABASE_ANON_KEY are passed with --dart-define (see agents.md).
   integration:
+  # Golden captures of every screen for docs/design/ui-audit.md. Run with
+  # --dart-define=DESIGN_AUDIT=true (add --update-goldens to refresh them).
+  design-audit:

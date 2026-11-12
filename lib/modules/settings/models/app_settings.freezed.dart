@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettings {
 
- ThemeMode get themeMode; int get timeoutSeconds; bool get followRedirects;/// Proxy URL; null means the proxy is off.
+ ThemeMode get themeMode; int get timeoutSeconds; bool get followRedirects;/// Request above response (true) or side by side (false).
+ bool get stackedLayout;/// Proxy URL; null means the proxy is off.
  String? get proxyUrl;
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -28,20 +29,20 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 @override
 bool operator ==(Object other) {
   final _this = this as AppSettings;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, _this.themeMode) || other.themeMode == _this.themeMode)&&(identical(other.timeoutSeconds, _this.timeoutSeconds) || other.timeoutSeconds == _this.timeoutSeconds)&&(identical(other.followRedirects, _this.followRedirects) || other.followRedirects == _this.followRedirects)&&(identical(other.proxyUrl, _this.proxyUrl) || other.proxyUrl == _this.proxyUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, _this.themeMode) || other.themeMode == _this.themeMode)&&(identical(other.timeoutSeconds, _this.timeoutSeconds) || other.timeoutSeconds == _this.timeoutSeconds)&&(identical(other.followRedirects, _this.followRedirects) || other.followRedirects == _this.followRedirects)&&(identical(other.stackedLayout, _this.stackedLayout) || other.stackedLayout == _this.stackedLayout)&&(identical(other.proxyUrl, _this.proxyUrl) || other.proxyUrl == _this.proxyUrl));
 }
 
 
 @override
 int get hashCode {
   final _this = this as AppSettings;
-  return Object.hash(runtimeType,_this.themeMode,_this.timeoutSeconds,_this.followRedirects,_this.proxyUrl);
+  return Object.hash(runtimeType,_this.themeMode,_this.timeoutSeconds,_this.followRedirects,_this.stackedLayout,_this.proxyUrl);
 }
 
 @override
 String toString() {
   final _this = this as AppSettings;
-  return 'AppSettings(themeMode: ${_this.themeMode}, timeoutSeconds: ${_this.timeoutSeconds}, followRedirects: ${_this.followRedirects}, proxyUrl: ${_this.proxyUrl})';
+  return 'AppSettings(themeMode: ${_this.themeMode}, timeoutSeconds: ${_this.timeoutSeconds}, followRedirects: ${_this.followRedirects}, stackedLayout: ${_this.stackedLayout}, proxyUrl: ${_this.proxyUrl})';
 }
 
 
@@ -52,7 +53,7 @@ abstract mixin class $AppSettingsCopyWith<$Res>  {
   factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
 @useResult
 $Res call({
- ThemeMode themeMode, int timeoutSeconds, bool followRedirects, String? proxyUrl
+ ThemeMode themeMode, int timeoutSeconds, bool followRedirects, bool stackedLayout, String? proxyUrl
 });
 
 
@@ -69,11 +70,12 @@ class _$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? timeoutSeconds = null,Object? followRedirects = null,Object? proxyUrl = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? timeoutSeconds = null,Object? followRedirects = null,Object? stackedLayout = null,Object? proxyUrl = freezed,}) {
   return _then(AppSettings(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,timeoutSeconds: null == timeoutSeconds ? _self.timeoutSeconds : timeoutSeconds // ignore: cast_nullable_to_non_nullable
 as int,followRedirects: null == followRedirects ? _self.followRedirects : followRedirects // ignore: cast_nullable_to_non_nullable
+as bool,stackedLayout: null == stackedLayout ? _self.stackedLayout : stackedLayout // ignore: cast_nullable_to_non_nullable
 as bool,proxyUrl: freezed == proxyUrl ? _self.proxyUrl : proxyUrl // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -160,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  int timeoutSeconds,  bool followRedirects,  String? proxyUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  int timeoutSeconds,  bool followRedirects,  bool stackedLayout,  String? proxyUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that.proxyUrl);case _:
+return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that.stackedLayout,_that.proxyUrl);case _:
   return orElse();
 
 }
@@ -181,10 +183,10 @@ return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  int timeoutSeconds,  bool followRedirects,  String? proxyUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  int timeoutSeconds,  bool followRedirects,  bool stackedLayout,  String? proxyUrl)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings():
-return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that.proxyUrl);case _:
+return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that.stackedLayout,_that.proxyUrl);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +203,10 @@ return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  int timeoutSeconds,  bool followRedirects,  String? proxyUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  int timeoutSeconds,  bool followRedirects,  bool stackedLayout,  String? proxyUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that.proxyUrl);case _:
+return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that.stackedLayout,_that.proxyUrl);case _:
   return null;
 
 }
@@ -216,12 +218,14 @@ return $default(_that.themeMode,_that.timeoutSeconds,_that.followRedirects,_that
 
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.themeMode = ThemeMode.dark, this.timeoutSeconds = 30, this.followRedirects = true, this.proxyUrl});
+  const _AppSettings({this.themeMode = ThemeMode.dark, this.timeoutSeconds = 30, this.followRedirects = true, this.stackedLayout = true, this.proxyUrl});
   
 
 @override@JsonKey() final  ThemeMode themeMode;
 @override@JsonKey() final  int timeoutSeconds;
 @override@JsonKey() final  bool followRedirects;
+/// Request above response (true) or side by side (false).
+@override@JsonKey() final  bool stackedLayout;
 /// Proxy URL; null means the proxy is off.
 @override final  String? proxyUrl;
 
@@ -235,18 +239,18 @@ _$AppSettingsCopyWith<_AppSettings> get copyWith => __$AppSettingsCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.timeoutSeconds, timeoutSeconds) || other.timeoutSeconds == timeoutSeconds)&&(identical(other.followRedirects, followRedirects) || other.followRedirects == followRedirects)&&(identical(other.proxyUrl, proxyUrl) || other.proxyUrl == proxyUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.timeoutSeconds, timeoutSeconds) || other.timeoutSeconds == timeoutSeconds)&&(identical(other.followRedirects, followRedirects) || other.followRedirects == followRedirects)&&(identical(other.stackedLayout, stackedLayout) || other.stackedLayout == stackedLayout)&&(identical(other.proxyUrl, proxyUrl) || other.proxyUrl == proxyUrl));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,themeMode,timeoutSeconds,followRedirects,proxyUrl);
+    return Object.hash(runtimeType,themeMode,timeoutSeconds,followRedirects,stackedLayout,proxyUrl);
 }
 
 @override
 String toString() {
-    return 'AppSettings(themeMode: $themeMode, timeoutSeconds: $timeoutSeconds, followRedirects: $followRedirects, proxyUrl: $proxyUrl)';
+    return 'AppSettings(themeMode: $themeMode, timeoutSeconds: $timeoutSeconds, followRedirects: $followRedirects, stackedLayout: $stackedLayout, proxyUrl: $proxyUrl)';
 }
 
 
@@ -257,7 +261,7 @@ abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith
   factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- ThemeMode themeMode, int timeoutSeconds, bool followRedirects, String? proxyUrl
+ ThemeMode themeMode, int timeoutSeconds, bool followRedirects, bool stackedLayout, String? proxyUrl
 });
 
 
@@ -274,11 +278,12 @@ class __$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? timeoutSeconds = null,Object? followRedirects = null,Object? proxyUrl = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? timeoutSeconds = null,Object? followRedirects = null,Object? stackedLayout = null,Object? proxyUrl = freezed,}) {
   return _then(_AppSettings(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,timeoutSeconds: null == timeoutSeconds ? _self.timeoutSeconds : timeoutSeconds // ignore: cast_nullable_to_non_nullable
 as int,followRedirects: null == followRedirects ? _self.followRedirects : followRedirects // ignore: cast_nullable_to_non_nullable
+as bool,stackedLayout: null == stackedLayout ? _self.stackedLayout : stackedLayout // ignore: cast_nullable_to_non_nullable
 as bool,proxyUrl: freezed == proxyUrl ? _self.proxyUrl : proxyUrl // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

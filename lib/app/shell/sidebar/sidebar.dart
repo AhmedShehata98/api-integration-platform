@@ -60,10 +60,20 @@ class _ShellSidebarState extends ConsumerState<ShellSidebar> {
                 hintText: 'Filter requests',
                 isDense: true,
                 prefixIcon: const Icon(Icons.search, size: 18),
-                suffixText: 'Ctrl+K',
-                suffixStyle: TextStyle(
-                  fontSize: 11,
-                  color: scheme.onSurfaceVariant,
+                // suffixText only shows while focused; the hint should always show.
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: AppSpacing.md),
+                  child: Center(
+                    widthFactor: 1,
+                    child: Text(
+                      'Ctrl+K',
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -120,30 +130,56 @@ class _Header extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final actions = CollectionActions(context, ref);
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.sm,
+      ),
+      child: Column(
         children: [
-          Flexible(
-            child: Text(
-              'Collections',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+          Row(
+            children: [
+              // Title and count share the space left of "Import".
+              Expanded(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'COLLECTIONS',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          letterSpacing: 0.8,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '$count',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Tooltip(
+                message: 'Import',
+                child: TextButton.icon(
+                  style: const ButtonStyle(
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  onPressed: () => showImportDialog(context),
+                  icon: const Icon(Icons.file_download_outlined, size: 16),
+                  label: const Text('Import', maxLines: 1),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            '$count',
-            style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
-          ),
-          const Spacer(),
-          IconButton(
-            tooltip: 'Import',
-            visualDensity: VisualDensity.compact,
-            iconSize: 20,
-            onPressed: () => showImportDialog(context),
-            icon: const Icon(Icons.file_download_outlined),
-          ),
+          const SizedBox(height: AppSpacing.sm),
           MenuAnchor(
             menuChildren: [
               MenuItemButton(
@@ -163,18 +199,16 @@ class _Header extends ConsumerWidget {
                 child: const Text('New collection'),
               ),
             ],
-            builder: (context, controller, _) => FilledButton.tonalIcon(
-              style: const ButtonStyle(
-                visualDensity: VisualDensity.compact,
-                padding: WidgetStatePropertyAll(
-                  EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                ),
+            builder: (context, controller, _) => SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                style: const ButtonStyle(visualDensity: VisualDensity.compact),
+                onPressed: () =>
+                    controller.isOpen ? controller.close() : controller.open(),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('New'),
+                iconAlignment: IconAlignment.start,
               ),
-              onPressed: () =>
-                  controller.isOpen ? controller.close() : controller.open(),
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text('New'),
-              iconAlignment: IconAlignment.start,
             ),
           ),
         ],

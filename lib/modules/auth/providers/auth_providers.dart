@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:test_point/core/database/supabase_client_provider.dart';
+import 'package:test_point/core/error/failure.dart';
 import 'package:test_point/core/error/result.dart';
 import 'package:test_point/modules/auth/models/auth_user.dart';
 import 'package:test_point/modules/auth/repositories/auth_repository.dart';
@@ -15,6 +16,11 @@ final authRepositoryProvider = Provider<AuthRepository>(
 /// discard (collections or environments). `auth` cannot see those modules, so
 /// the app wires this in `app/di/`; the default is "no data".
 final guestHasDataProvider = Provider<bool>((ref) => false);
+
+/// Failures from a GitHub redirect nobody was waiting for.
+final authCallbackErrorProvider = StreamProvider<Failure>(
+  (ref) => ref.watch(authRepositoryProvider).callbackErrors,
+);
 
 /// The current session user. Starts a guest session when none is stored.
 /// Errors carry a `Failure` as the error object.
@@ -40,7 +46,9 @@ class SessionNotifier extends AsyncNotifier<AuthUser?> {
 
     final result = await repository.signInAnonymously();
     return result.when(
-      success: (user) => user,
+      // A GitHub redirect that was being exchanged while the guest session
+      // started may have signed in a real account meanwhile; keep that one.
+      success: (guest) => repository.currentUser ?? guest,
       failure: (failure) => throw failure,
     );
   }

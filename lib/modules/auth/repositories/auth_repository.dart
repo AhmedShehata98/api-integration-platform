@@ -1,3 +1,4 @@
+import 'package:test_point/core/error/failure.dart';
 import 'package:test_point/core/error/result.dart';
 import 'package:test_point/modules/auth/models/auth_user.dart';
 
@@ -7,6 +8,11 @@ abstract interface class AuthRepository {
 
   /// Emits whenever the session user changes (sign in, sign out, link).
   Stream<AuthUser?> get userChanges;
+
+  /// Failures from a GitHub redirect that no sign-in call is waiting for, e.g.
+  /// the app was started fresh by the browser's link. Errors that happen before
+  /// anyone listens are kept and delivered to the first listener.
+  Stream<Failure> get callbackErrors;
 
   /// Starts a guest session.
   Future<Result<AuthUser>> signInAnonymously();

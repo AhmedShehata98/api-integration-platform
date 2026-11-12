@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:test_point/core/ui/theme/app_spacing.dart';
-import 'package:test_point/core/ui/widgets/variable_chip.dart';
 import 'package:test_point/modules/environments/environments.dart';
 import 'package:test_point/modules/requests/models/send_state.dart';
 import 'package:test_point/modules/requests/providers/request_providers.dart';
 import 'package:test_point/modules/requests/widgets/method_menu.dart';
 import 'package:test_point/modules/requests/widgets/save_request_flow.dart';
 import 'package:test_point/modules/requests/widgets/url_field.dart';
+import 'package:test_point/modules/requests/widgets/variable_highlight_controller.dart';
 
-/// Method menu, URL field and the Send / Cancel button. Variables used in the
-/// URL are listed below it; undefined ones are amber.
+/// Method menu, URL field and the Send / Cancel button. `{{variables}}` in
+/// the URL are colored in place; undefined ones are amber.
 class RequestBar extends ConsumerStatefulWidget {
   const RequestBar({super.key});
 
@@ -19,7 +19,7 @@ class RequestBar extends ConsumerStatefulWidget {
 }
 
 class _RequestBarState extends ConsumerState<RequestBar> {
-  late final _url = TextEditingController(
+  late final _url = VariableHighlightController(
     text: ref.read(requestDraftProvider).url,
   );
   final _focus = FocusNode();
@@ -39,12 +39,11 @@ class _RequestBarState extends ConsumerState<RequestBar> {
     });
 
     final method = ref.watch(requestDraftProvider.select((d) => d.method));
-    final url = ref.watch(requestDraftProvider.select((d) => d.url));
     final sending = ref.watch(sendStateProvider) is SendLoading;
     final values = ref.watch(variableResolverProvider).values;
     final draft = ref.read(requestDraftProvider.notifier);
     final sender = ref.read(sendStateProvider.notifier);
-    final used = VariableResolver.namesIn(url);
+    _url.resolvedNames = values.keys.toSet();
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -71,11 +70,25 @@ class _RequestBarState extends ConsumerState<RequestBar> {
                   child: const Text('Cancel'),
                 )
               else
-                Tooltip(
-                  message: 'Ctrl+Enter',
-                  child: FilledButton(
-                    onPressed: sender.send,
-                    child: const Text('Send'),
+                FilledButton(
+                  onPressed: sender.send,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Send', maxLines: 1),
+                      const SizedBox(width: AppSpacing.sm),
+                      // Keyboard hint, always `Ctrl` (shell standard).
+                      Text(
+                        'Ctrl+Enter',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontFamily: 'JetBrainsMono',
+                          color: Theme.of(context).colorScheme.onPrimary
+                              .withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               IconButton(
@@ -85,21 +98,6 @@ class _RequestBarState extends ConsumerState<RequestBar> {
               ),
             ],
           ),
-          if (used.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: Wrap(
-                spacing: AppSpacing.xs,
-                runSpacing: AppSpacing.xs,
-                children: [
-                  for (final name in used)
-                    VariableChip(
-                      name: name,
-                      resolved: values.containsKey(name),
-                    ),
-                ],
-              ),
-            ),
         ],
       ),
     );

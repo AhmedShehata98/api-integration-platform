@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:test_point/app/shell/nav_rail.dart';
+import 'package:test_point/modules/auth/auth.dart';
 import 'package:test_point/app/shell/sidebar/sidebar.dart';
 import 'package:test_point/app/shell/status_bar.dart';
 import 'package:test_point/app/shell/top_bar.dart';
@@ -53,30 +54,32 @@ class _AppShellState extends State<AppShell> {
         },
         child: Focus(
           autofocus: true,
-          child: Scaffold(
-            body: Row(
-              children: [
-                ShellNavRail(location: widget.location),
-                Expanded(
-                  child: Column(
-                    children: [
-                      const ShellTopBar(),
-                      Expanded(
-                        child: WorkspaceGate(
-                          child: Row(
-                            children: [
-                              if (_showSidebar)
-                                ShellSidebar(filterFocus: _filterFocus),
-                              Expanded(child: widget.child),
-                            ],
+          child: AuthCallbackErrorListener(
+            child: Scaffold(
+              body: Row(
+                children: [
+                  ShellNavRail(location: widget.location),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const ShellTopBar(),
+                        Expanded(
+                          child: WorkspaceGate(
+                            child: Row(
+                              children: [
+                                if (_showSidebar)
+                                  ShellSidebar(filterFocus: _filterFocus),
+                                Expanded(child: widget.child),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const ShellStatusBar(),
-                    ],
+                        const ShellStatusBar(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -32,6 +32,7 @@ void main() {
         timeoutSeconds: 12,
         followRedirects: false,
         proxyUrl: 'http://127.0.0.1:8888',
+        stackedLayout: false,
       );
       expect(
         (await SettingsRepositoryImpl(prefs).save(settings)).isSuccess,
