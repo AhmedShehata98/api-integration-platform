@@ -4,7 +4,7 @@ import 'package:test_point/core/ui/theme/app_spacing.dart';
 import 'package:test_point/modules/environments/environments.dart';
 import 'package:test_point/modules/settings/settings.dart';
 
-/// 28 px status bar: state on the left, active environment and proxy state
+/// 28 px status bar: state and active environment on the left, proxy state
 /// on the right.
 class ShellStatusBar extends ConsumerWidget {
   const ShellStatusBar({super.key});
@@ -35,9 +35,19 @@ class ShellStatusBar extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Row(
         children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: scheme.primary,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
           Text('Ready', style: style, maxLines: 1),
-          const Spacer(),
-          Flexible(
+          const SizedBox(width: AppSpacing.md),
+          // Takes the free space so the proxy state stays on the right edge.
+          Expanded(
             child: Text(
               environmentText,
               style: style,

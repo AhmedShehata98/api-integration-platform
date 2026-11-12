@@ -98,11 +98,17 @@ class _NavItem extends StatelessWidget {
               child: Icon(item.icon, size: 22, color: color),
             ),
             const SizedBox(height: 2),
-            Text(
-              item.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 11, color: color),
+            // Scales down instead of cutting "Environments" short.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  item.label,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 11, color: color),
+                ),
+              ),
             ),
           ],
         ),
